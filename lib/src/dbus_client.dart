@@ -216,12 +216,12 @@ class DBusClosedException implements Exception {}
 
 class NameOwners {
   final _nameOwners = <DBusBusName, DBusBusName>{};
-  /* The Future is used to await in [] operator
+  /* The Completer is used to await in [] operator
    * till name owner data will be received.
    * Without this synchronization the _processSignal method
    * might ignore signals received before name owner data.
    */
-  Future<void>? nameOwnerSet;
+  final Completer _completer = Completer();
 
   bool containsValue(DBusBusName? name) {
     return _nameOwners.containsValue(name);
@@ -232,7 +232,6 @@ class NameOwners {
   }
 
   Future<DBusBusName?> setNameOwner(DBusClient client, DBusBusName name) async {
-    nameOwnerSet = null;
     var uniqueName = await getNameOwner(client, name.value);
     if (uniqueName == null) {
       return null;
@@ -240,7 +239,7 @@ class NameOwners {
 
     var uniqueName_ = DBusBusName(uniqueName);
     _nameOwners[name] = uniqueName_;
-    nameOwnerSet = Future<void>.value();
+    _completer.complete();
     return uniqueName_;
   }
 
@@ -265,7 +264,7 @@ class NameOwners {
   }
 
   Future<DBusBusName?> operator [](DBusBusName? key) async {
-    await nameOwnerSet;
+    await _completer.future;
     return _nameOwners[key];
   }
   void operator []=(DBusBusName key, DBusBusName value) => _nameOwners[key] = value;
