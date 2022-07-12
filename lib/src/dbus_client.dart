@@ -216,7 +216,7 @@ class DBusClosedException implements Exception {}
 
 class NameOwners {
   final _nameOwners = <DBusBusName, DBusBusName>{};
-  Future? nameOwnersFutureResponse;
+  Future<void>? nameOwnerSet;
 
   bool containsValue(DBusBusName? name) {
     return _nameOwners.containsValue(name);
@@ -227,14 +227,15 @@ class NameOwners {
   }
 
   Future<DBusBusName?> setNameOwner(DBusClient client, DBusBusName name) async {
-    nameOwnersFutureResponse = getNameOwner(client, name.value);
-    var uniqueName = await nameOwnersFutureResponse;
+    nameOwnerSet = null;
+    var uniqueName = await getNameOwner(client, name.value);
     if (uniqueName == null) {
       return null;
     }
 
     var uniqueName_ = DBusBusName(uniqueName);
     _nameOwners[name] = uniqueName_;
+    nameOwnerSet = Future<void>.value();
     return uniqueName_;
   }
 
@@ -259,7 +260,7 @@ class NameOwners {
   }
 
   Future<DBusBusName?> operator [](DBusBusName? key) async {
-    await nameOwnersFutureResponse;
+    await nameOwnerSet;
     return _nameOwners[key];
   }
   void operator []=(DBusBusName key, DBusBusName value) => _nameOwners[key] = value;
