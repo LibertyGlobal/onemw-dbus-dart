@@ -216,6 +216,11 @@ class DBusClosedException implements Exception {}
 
 class NameOwners {
   final _nameOwners = <DBusBusName, DBusBusName>{};
+  /* The Future is used to await in [] operator
+   * till name owner data will be received.
+   * Without this synchronization the _processSignal method
+   * might ignore signals received before name owner data.
+   */
   Future<void>? nameOwnerSet;
 
   bool containsValue(DBusBusName? name) {
