@@ -116,7 +116,11 @@ class DBusWSReadBuffer {
       values_in_json = jsonResult['result'];
     } else if (type == DBusMessageType.signal) {
       replySerial = jsonResult['id'];
-      signature = DBusSignature(jsonResult['signature']);
+      // it is possible to receive signal without signature
+      // example:
+      //  {"serial":5,"path":"/device","interface":"com.lgi.rdk.utils.fsmaintainer1","member":"ConfigurationSet","sender":":1.5059","type":4,"flags":1}
+      // enforce empty signature for such case
+      signature = DBusSignature(jsonResult['signature'] ?? '');
       values_in_json = jsonResult['body'];
     } else if (type == DBusMessageType.error) {
       replySerial = jsonResult['id']['serial'];
