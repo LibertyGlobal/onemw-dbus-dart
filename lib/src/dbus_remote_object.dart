@@ -5,13 +5,17 @@ import 'dbus_signal.dart';
 import 'dbus_value.dart';
 import 'dart:mirrors';
 
-class ProxyStream implements DBusRemoteObjectSignalStream {
+class ProxyStream<T> implements Stream<T> {
   final DBusRemoteObjectSignalStream _originalStream;
-  final Stream<DBusSignal> _mappedStream;
+  final Stream<T> _mappedStream;
 
-  ProxyStream({required DBusRemoteObjectSignalStream stream, required DBusSignal Function(DBusSignal) mapFunction}):
+  ProxyStream({required DBusRemoteObjectSignalStream stream, required T Function(DBusSignal) mapFunction}):
   _originalStream = stream,
   _mappedStream = stream.asBroadcastStream().map(mapFunction);
+
+  Future<void> listenSync() async {
+    return _originalStream.listenSync();
+  }
 
   @override
   dynamic noSuchMethod(Invocation invocation) {
