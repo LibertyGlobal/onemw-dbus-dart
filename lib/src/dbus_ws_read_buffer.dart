@@ -116,7 +116,11 @@ class DBusWSReadBuffer {
       values_in_json = jsonResult['result'];
     } else if (type == DBusMessageType.signal) {
       replySerial = jsonResult['id'];
-      signature = DBusSignature(jsonResult['signature']);
+      // it is possible to receive signal without signature
+      // example:
+      //  {"serial":5,"path":"/device","interface":"com.lgi.rdk.utils.fsmaintainer1","member":"ConfigurationSet","sender":":1.5059","type":4,"flags":1}
+      // enforce empty signature for such case
+      signature = DBusSignature(jsonResult['signature'] ?? '');
       values_in_json = jsonResult['body'];
     } else if (type == DBusMessageType.error) {
       replySerial = jsonResult['id']['serial'];
@@ -133,7 +137,15 @@ class DBusWSReadBuffer {
       if (values_in_json!=null) {
         values = readDBusValuesFromJson(signature, values_in_json);
       } else {
-        throw 'Message has signature $signature but json body is null';
+        // signal with empty signature has no "body", example:
+        // signal:{"serial":12,"signature":"","path":"/com/lgi/rdk/application/netdiagnostics1","member":"ServiceStarted","interface":"com.lgi.rdk.application.netdiagnostics1","sender":":1.3623","type":4,"flags":1}
+        // method return with empty signature has empty "result", example:
+        // invoke:{"id":{"serial":2,"signature":""},"result":[]}
+        if (type != DBusMessageType.signal) {
+          throw 'Message has signature $signature but json body is null';
+        } else if (signature.value.isNotEmpty) {
+          throw 'Signal message has signature $signature but json body is null';
+        }
       }
     } else {
       if (values_in_json!=null && values_in_json.length != 0) {
