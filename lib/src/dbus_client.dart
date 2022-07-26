@@ -144,12 +144,9 @@ class DBusSignalStream extends Stream<DBusSignal> {
   }
 
   Future<void> listenSync() async {
-    Completer completer = Completer();
     await subscriptionStartCompleter.future;
     await addMatchFuture;
     await getUniqueNameFuture;
-    completer.complete();
-    return completer.future;
   }
 
   void _onListen() {
