@@ -3,25 +3,6 @@ import 'dbus_introspect.dart';
 import 'dbus_method_response.dart';
 import 'dbus_signal.dart';
 import 'dbus_value.dart';
-import 'dart:mirrors';
-
-class ProxyStream implements DBusRemoteObjectSignalStream {
-  final DBusRemoteObjectSignalStream _originalStream;
-  final Stream<DBusSignal> _mappedStream;
-
-  ProxyStream({required DBusRemoteObjectSignalStream stream, required DBusSignal Function(DBusSignal) mapFunction}):
-  _originalStream = stream,
-  _mappedStream = stream.asBroadcastStream().map(mapFunction);
-
-  @override
-  dynamic noSuchMethod(Invocation invocation) {
-    try {
-      return reflect(_mappedStream).delegate(invocation);
-    } on NoSuchMethodError catch(_) {
-      return reflect(_originalStream).delegate(invocation);
-    }
-  }
-}
 
 /// A stream of signals from a remote object.
 class DBusRemoteObjectSignalStream extends DBusSignalStream {
