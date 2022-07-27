@@ -864,7 +864,7 @@ class DBusCodeGenerator {
 
     var source = '';
     source += '  /// Stream of ${interface.name}.${signal.name} signals.\n';
-    source += '  late final ProxyStream<${signalClassName}> $variableName;\n';
+    source += '  late final ProxyStream $variableName;\n';
 
     return source;
   }
@@ -878,7 +878,7 @@ class DBusCodeGenerator {
     var signalClassName = '$classPrefix${signal.name}';
     var stream = 
     "    var ${variableName}Original = DBusRemoteObjectSignalStream(object: this, interface: '${interface.name}', name: '${signal.name}', signature: DBusSignature('${signal.signature.value}'));\n";
-    stream += '    $variableName = ProxyStream<${signalClassName}>(stream: ${variableName}Original, mapFunction: (signal) => $signalClassName(signal));\n';
+    stream += '    $variableName = ProxyStream(stream: ${variableName}Original, mapFunction: (signal) => $signalClassName(signal));\n';
     return stream;
 
   }
