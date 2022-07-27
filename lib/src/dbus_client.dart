@@ -101,9 +101,6 @@ class DBusSignalStream extends Stream<DBusSignal> {
   final DBusMatchRule _rule;
   final DBusSignature? _signature;
   final _controller = StreamController<DBusSignal>.broadcast();
-  Future<void>? addMatchFuture;
-  Completer subscriptionStartCompleter = Completer();
-  Future<DBusBusName?>? getUniqueNameFuture;
 
   /// Creates a stream of signals that match [sender], [interface], [name], [path] and/or [pathNamespace].
   ///
@@ -136,25 +133,16 @@ class DBusSignalStream extends Stream<DBusSignal> {
       {Function? onError,
       void Function()? onDone,
       bool? cancelOnError}) {
-    subscriptionStartCompleter = Completer();
-    var subscription = _controller.stream.listen(onData,
+    return _controller.stream.listen(onData,
         onError: onError, onDone: onDone, cancelOnError: cancelOnError);
-    subscriptionStartCompleter.complete();
-    return subscription;
-  }
-
-  Future<void> listenSync() async {
-    await subscriptionStartCompleter.future;
-    await addMatchFuture;
-    await getUniqueNameFuture;
   }
 
   void _onListen() {
     _client._signalStreams.add(this);
     if (_rule.sender != null) {
-      getUniqueNameFuture = _client._findUniqueName(_rule.sender!);
+      _client._findUniqueName(_rule.sender!);
     }
-    addMatchFuture = _client._addMatch(_rule.toDBusString());
+    _client._addMatch(_rule.toDBusString());
   }
 
   Future<void> _onCancel() async {
@@ -855,7 +843,6 @@ class DBusClient {
 
   /// Adds a rule to match which messages to receive.
   Future<void> _addMatch(String rule) async {
-    Completer<void> completer = Completer();
     var count = _matchRules[rule];
     if (count == null) {
       _matchRules[rule] = 1;
@@ -866,13 +853,9 @@ class DBusClient {
           name: 'AddMatch',
           values: [DBusString(rule)],
           replySignature: DBusSignature(''));
-      completer.complete();
     } else {
       _matchRules[rule] = count + 1;
-      completer.complete();
     }
-
-    return completer.future;
   }
 
   /// Removes an existing rule to match which messages to receive.
