@@ -864,7 +864,7 @@ class DBusCodeGenerator {
 
     var source = '';
     source += '  /// Stream of ${interface.name}.${signal.name} signals.\n';
-    source += '  late final Stream<$signalClassName> $variableName;\n';
+    source += '  late final ProxyStream $variableName;\n';
 
     return source;
   }
@@ -876,7 +876,11 @@ class DBusCodeGenerator {
       DBusIntrospectInterface interface,
       DBusIntrospectSignal signal) {
     var signalClassName = '$classPrefix${signal.name}';
-    return "    $variableName = DBusRemoteObjectSignalStream(object: this, interface: '${interface.name}', name: '${signal.name}', signature: DBusSignature('${signal.signature.value}')).asBroadcastStream().map((signal) => $signalClassName(signal));\n";
+    var stream = 
+    "    var ${variableName}Original = DBusRemoteObjectSignalStream(object: this, interface: '${interface.name}', name: '${signal.name}', signature: DBusSignature('${signal.signature.value}'));\n";
+    stream += '    $variableName = ProxyStream(stream: ${variableName}Original, mapFunction: (signal) => $signalClassName(signal));\n';
+    return stream;
+
   }
 
   // Converts a introspection node to a Dart class name using the object path or interface name.
