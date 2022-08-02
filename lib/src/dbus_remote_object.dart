@@ -1,8 +1,196 @@
+import 'dart:async';
+
 import 'dbus_client.dart';
 import 'dbus_introspect.dart';
 import 'dbus_method_response.dart';
 import 'dbus_signal.dart';
 import 'dbus_value.dart';
+
+class ProxyStream<T> implements Stream<T> {
+  final DBusRemoteObjectSignalStream _originalStream;
+  final Stream<T> _mappedStream;
+
+  ProxyStream({required DBusRemoteObjectSignalStream stream, required T Function(DBusSignal) mapFunction}):
+  _originalStream = stream,
+  _mappedStream = stream.asBroadcastStream().map(mapFunction);
+
+  Future<void> listenSync() async {
+    return _originalStream.listenSync();
+  }
+
+  @override
+  Future<bool> any(bool Function(T element) test) {
+    return _mappedStream.any(test);
+  }
+
+  @override
+  Stream<T> asBroadcastStream({void Function(StreamSubscription<T> subscription)? onListen, void Function(StreamSubscription<T> subscription)? onCancel}) {
+    return _mappedStream.asBroadcastStream(onListen: onListen, onCancel: onCancel);
+  }
+
+  @override
+  Stream<E> asyncExpand<E>(Stream<E>? Function(T event) convert) {
+    return _mappedStream.asyncExpand<E>(convert);
+  }
+
+  @override
+  Stream<E> asyncMap<E>(FutureOr<E> Function(T event) convert) {
+    return _mappedStream.asyncMap<E>(convert);
+  }
+
+  @override
+  Stream<R> cast<R>() {
+    return _mappedStream.cast<R>();
+  }
+
+  @override
+  Future<bool> contains(Object? needle) {
+    return _mappedStream.contains(needle);
+  }
+
+  @override
+  Stream<T> distinct([bool Function(T previous, T next)? equals]) {
+    return _mappedStream.distinct(equals);
+  }
+
+  @override
+  Future<E> drain<E>([E? futureValue]) {
+    return _mappedStream.drain(futureValue);
+  }
+
+  @override
+  Future<T> elementAt(int index) {
+    return _mappedStream.elementAt(index);
+  }
+
+  @override
+  Future<bool> every(bool Function(T element) test) {
+    return _mappedStream.every(test);
+  }
+
+  @override
+  Stream<S> expand<S>(Iterable<S> Function(T element) convert) {
+    return _mappedStream.expand(convert);
+  }
+
+  @override
+  Future<T> get first => _mappedStream.first;
+
+  @override
+  Future<T> firstWhere(bool Function(T element) test, {T Function()? orElse}) {
+    return _mappedStream.firstWhere(test, orElse: orElse);
+  }
+
+  @override
+  Future<S> fold<S>(S initialValue, S Function(S previous, T element) combine) {
+    return _mappedStream.fold(initialValue, combine);
+  }
+
+  @override
+  Future forEach(void Function(T element) action) {
+    return _mappedStream.forEach(action);
+  }
+
+  @override
+  Stream<T> handleError(Function onError, {bool Function(dynamic error)? test}) {
+    return _mappedStream.handleError(handleError, test: test);
+  }
+
+  @override
+  bool get isBroadcast => _mappedStream.isBroadcast;
+
+  @override
+  Future<bool> get isEmpty => _mappedStream.isEmpty;
+
+  @override
+  Future<String> join([String separator = '']) {
+    return _mappedStream.join(separator);
+  }
+
+  @override
+  Future<T> get last => _mappedStream.last;
+
+  @override
+  Future<T> lastWhere(bool Function(T element) test, {T Function()? orElse}) {
+    return _mappedStream.lastWhere(test, orElse: orElse);
+  }
+
+  @override
+  Future<int> get length => _mappedStream.length;
+
+  @override
+  StreamSubscription<T> listen(void Function(T event)? onData, {Function? onError, void Function()? onDone, bool? cancelOnError}) {
+    return _mappedStream.listen(onData, onError: onError, onDone: onDone, cancelOnError: cancelOnError);
+  }
+
+  @override
+  Stream<S> map<S>(S Function(T event) convert) {
+    return _mappedStream.map(convert);
+  }
+
+  @override
+  Future pipe(StreamConsumer<T> streamConsumer) {
+    return _mappedStream.pipe(streamConsumer);
+  }
+
+  @override
+  Future<T> reduce(T Function(T previous, T element) combine) {
+    return _mappedStream.reduce(combine);
+  }
+
+  @override
+  Future<T> get single => _mappedStream.single;
+
+  @override
+  Future<T> singleWhere(bool Function(T element) test, {T Function()? orElse}) {
+    return _mappedStream.singleWhere(test, orElse: orElse);
+  }
+
+  @override
+  Stream<T> skip(int count) {
+    return _mappedStream.skip(count);
+  }
+
+  @override
+  Stream<T> skipWhile(bool Function(T element) test) {
+    return _mappedStream.skipWhile(test);
+  }
+
+  @override
+  Stream<T> take(int count) {
+    return _mappedStream.take(count);
+  }
+
+  @override
+  Stream<T> takeWhile(bool Function(T element) test) {
+    return _mappedStream.takeWhile(test);
+  }
+
+  @override
+  Stream<T> timeout(Duration timeLimit, {void Function(EventSink<T> sink)? onTimeout}) {
+    return _mappedStream.timeout(timeLimit, onTimeout: onTimeout);
+  }
+
+  @override
+  Future<List<T>> toList() {
+    return _mappedStream.toList();
+  }
+
+  @override
+  Future<Set<T>> toSet() {
+    return _mappedStream.toSet();
+  }
+
+  @override
+  Stream<S> transform<S>(StreamTransformer<T, S> streamTransformer) {
+    return _mappedStream.transform(streamTransformer);
+  }
+
+  @override
+  Stream<T> where(bool Function(T event) test) {
+    return _mappedStream.where(test);
+  }
+}
 
 /// A stream of signals from a remote object.
 class DBusRemoteObjectSignalStream extends DBusSignalStream {
