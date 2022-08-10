@@ -1031,7 +1031,7 @@ class DBusClient {
   }
 
   /// Processes a signal received from the D-Bus server.
-  void _processSignal(DBusMessage message) {
+  void _processSignal(DBusMessage message) async {
     // Check has required fields.
     if (message.path == null ||
         message.interface == null ||
@@ -1046,13 +1046,32 @@ class DBusClient {
         sender = stream._rule.sender;
       }
 
-      if (!stream._rule.match(
+      IsMatch match = stream._rule.match(
           type: DBusMessageType.signal,
           sender: sender,
           interface: message.interface,
           member: message.member,
-          path: message.path)) {
+          path: message.path);
+
+      if(match == IsMatch.no) {
         continue;
+      }
+      else if(match == IsMatch.noSenderMismatch) {
+        if(_nameOwners.containsKey(stream._rule.sender)) {
+          await _findUniqueName(stream._rule.sender!);
+          if (_nameOwners[stream._rule.sender] == sender) {
+            sender = stream._rule.sender;
+          }
+          IsMatch newMatch = stream._rule.match(
+              type: DBusMessageType.signal,
+              sender: sender,
+              interface: message.interface,
+              member: message.member,
+              path: message.path);
+          if(newMatch != IsMatch.yes) {
+            continue;
+          }
+        }
       }
 
       var signal = DBusSignal(
