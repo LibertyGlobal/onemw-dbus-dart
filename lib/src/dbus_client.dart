@@ -1059,6 +1059,7 @@ class DBusClient {
       else if(match == IsMatch.noSenderMismatch) {
         if(_nameOwners.containsKey(stream._rule.sender)) {
           await _findUniqueName(stream._rule.sender!);
+          var sender = message.sender;
           if (_nameOwners[stream._rule.sender] == sender) {
             sender = stream._rule.sender;
           }
