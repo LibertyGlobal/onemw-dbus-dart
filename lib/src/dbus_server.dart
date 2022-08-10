@@ -99,7 +99,7 @@ class _DBusRemoteClient {
         sender = rule.sender;
       }
 
-      if (rule.match(
+      if (IsMatch.yes == rule.match(
           type: message.type,
           sender: sender,
           interface: message.interface,

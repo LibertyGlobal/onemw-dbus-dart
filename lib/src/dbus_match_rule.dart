@@ -4,6 +4,11 @@ import 'dbus_member_name.dart';
 import 'dbus_message.dart';
 import 'dbus_value.dart';
 
+enum IsMatch {
+  yes, no, noSenderMismatch
+}
+
+
 /// Exception thrown for invalid match rules.
 class DBusMatchRuleException implements Exception {
   final String message;
@@ -166,34 +171,34 @@ class DBusMatchRule {
   }
 
   /// True if the rule matches the supplied values.
-  bool match(
+  IsMatch match(
       {DBusMessageType? type,
       DBusBusName? sender,
       DBusInterfaceName? interface,
       DBusMemberName? member,
       DBusObjectPath? path}) {
     if (this.type != null && this.type != type) {
-      return false;
-    }
-    if (this.sender != null && this.sender != sender) {
-      return false;
+      return IsMatch.no;
     }
     if (this.interface != null && this.interface != interface) {
-      return false;
+      return IsMatch.no;
     }
     if (this.member != null && this.member != member) {
-      return false;
+      return IsMatch.no;
     }
     if (this.path != null && this.path != path) {
-      return false;
+      return IsMatch.no;
     }
     if (pathNamespace != null &&
         path != null &&
         !path.isInNamespace(pathNamespace!)) {
-      return false;
+      return IsMatch.no;
+    }
+    if (this.sender != null && this.sender != sender) {
+      return IsMatch.noSenderMismatch;
     }
 
-    return true;
+    return IsMatch.yes;
   }
 
   @override
