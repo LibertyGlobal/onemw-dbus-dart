@@ -1,11 +1,10 @@
 name: dbus_onemw
-version: 0.7.3+1
+version: 0.7.3+2
 
 description:
   LG extension of a native Dart implementation of the D-Bus message bus client.
-  https://github.com/canonical/dbus.dart
 
-homepage: https://github.com/canonical/dbus.dart
+homepage: https://github.com/LibertyGlobal/onemw-dbus-dart
 
 environment:
   sdk: '>=2.15.0 <3.0.0'

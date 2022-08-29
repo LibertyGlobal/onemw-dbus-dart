@@ -38,6 +38,7 @@ class DBusCodeGenerator {
     var source = '';
 
     source += _generateHeader();
+    source += "// ignore_for_file: unused_import\n\n";
     source += "import 'package:dbus_onemw/dbus.dart';\n";
     source += '\n';
     if (_withAnnotations) {
