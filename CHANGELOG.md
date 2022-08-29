@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.3+1
+
+* 0.7.3 dbus.dart version with LG onemw extensions, see README.lg.md for details
+* xml dependency updated
+
 ## 0.7.3
 
 * Add missing cast in generated array code.
