@@ -27,7 +27,7 @@ class GenerateObjectCommand extends Command {
     var filename = argResults!.rest[0];
     var node = await loadNode(filename);
     var comment =
-        'This file was generated using the following command and may be overwritten.\ndart-dbus $name $filename';
+        'This file was generated using the following command and may be overwritten.\ndart-dbus $name ${File(filename).uri.pathSegments.last}';
     var source = DBusCodeGenerator(node,
             comment: comment, className: argResults?['class-name'])
         .generateServerSource();
@@ -61,7 +61,7 @@ class GenerateRemoteObjectCommand extends Command {
     var filename = argResults!.rest[0];
     var node = await loadNode(filename);
     var comment =
-        'This file was generated using the following command and may be overwritten.\ndart-dbus $name $filename';
+        'This file was generated using the following command and may be overwritten.\ndart-dbus $name ${File(filename).uri.pathSegments.last}';
     var source = DBusCodeGenerator(node,
             comment: comment, className: argResults?['class-name'], withAnnotations:argResults?['annotations'])
         .generateClientSource();
