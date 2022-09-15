@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.3+3
+
+* generator: use basename of dbus interface xml
+* released from tag 0.7.3+3
+
 ## 0.7.3+2
 
 * homepage updated
