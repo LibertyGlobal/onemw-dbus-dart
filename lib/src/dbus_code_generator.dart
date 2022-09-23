@@ -878,7 +878,7 @@ class DBusCodeGenerator {
       DBusIntrospectSignal signal) {
     var signalClassName = '$classPrefix${signal.name}';
     var stream = 
-    "    var ${variableName}Original = DBusRemoteObjectSignalStream(object: this, interface: '${interface.name}', name: '${signal.name}', signature: DBusSignature('${signal.signature.value}'));\n";
+    "    var ${variableName}Original = DBusRemoteObjectSignalStream(object: this, interface: '${interface.name}', name: '${signal.name}', signature: DBusSignature('${signal.signature.value}'), ignoreSender: true);\n";
     stream += '    $variableName = ProxyStream<${signalClassName}>(stream: ${variableName}Original, mapFunction: (signal) => $signalClassName(signal));\n';
     return stream;
 
