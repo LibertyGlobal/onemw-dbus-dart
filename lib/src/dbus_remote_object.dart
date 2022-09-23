@@ -203,9 +203,10 @@ class DBusRemoteObjectSignalStream extends DBusSignalStream {
       {required DBusRemoteObject object,
       required String interface,
       required String name,
-      DBusSignature? signature})
+      DBusSignature? signature,
+      bool ignoreSender = false})
       : super(object.client,
-            sender: object.name,
+            sender: ignoreSender ? null : object.name,
             path: object.path,
             interface: interface,
             name: name,
