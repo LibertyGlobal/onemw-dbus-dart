@@ -617,9 +617,9 @@ class DBusCodeGenerator {
     String pathArg;
     if (node.name != null) {
       pathArg =
-          "{DBusObjectPath path = const DBusObjectPath.unchecked('${node.name}')}";
+          "{DBusObjectPath path = const DBusObjectPath.unchecked('${node.name}'), bool ignoreSender = true}";
     } else {
-      pathArg = 'DBusObjectPath path';
+      pathArg = 'DBusObjectPath path, {bool ignoreSender = true}';
     }
 
     var suffix = _withAnnotations ? "Internal" : "";
@@ -878,7 +878,7 @@ class DBusCodeGenerator {
       DBusIntrospectSignal signal) {
     var signalClassName = '$classPrefix${signal.name}';
     var stream = 
-    "    var ${variableName}Original = DBusRemoteObjectSignalStream(object: this, interface: '${interface.name}', name: '${signal.name}', signature: DBusSignature('${signal.signature.value}'), ignoreSender: true);\n";
+    "    var ${variableName}Original = DBusRemoteObjectSignalStream(object: this, interface: '${interface.name}', name: '${signal.name}', signature: DBusSignature('${signal.signature.value}'), ignoreSender: ignoreSender);\n";
     stream += '    $variableName = ProxyStream<${signalClassName}>(stream: ${variableName}Original, mapFunction: (signal) => $signalClassName(signal));\n';
     return stream;
 
