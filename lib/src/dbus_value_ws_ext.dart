@@ -6,6 +6,8 @@ extension DBusValueToJson on DBusValue {
       return DBusStructToJson(this as DBusStruct).toJson();
     } else if (this is DBusArray) {
       return DBusArrayToJson(this as DBusArray).toJson();
+    } else if (this is DBusDict) {
+      return DBusDictToJson(this as DBusDict).toJson();
     }
     return toNative();
   }
@@ -92,7 +94,17 @@ extension DBusArrayToJson on DBusArray {
 //   dynamic toJson() => toNative();
 // }
 //
-// extension DBusDictToJson on DBusDict {
-//   dynamic toJson() => toNative();
-// }
+extension DBusDictToJson on DBusDict {
+  /*
+    this will be consumed by dbus-native package on the other side;
+    the expected encoding of DbusDict should be like:
+    [["key":"value"],["key2":"value2"],...]
+  */
+  dynamic toJson() {
+    return children.entries
+        .map((entry) =>
+            [entry.key.toJson(),entry.value.toJson()])
+        .toList();
+  }
+}
 //
