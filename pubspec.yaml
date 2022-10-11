@@ -1,5 +1,5 @@
 name: dbus_onemw
-version: 0.7.3+3
+version: 0.7.3+4
 
 description:
   LG extension of a native Dart implementation of the D-Bus message bus client.

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.3+4
+
+* ONEMPERS-594 expose ignore sender parameter
+* ONEMPERS-609 add support for DBusDict over WebSockets
+* released from tag 0.7.3+4
+
 ## 0.7.3+3
 
 * generator: use basename of dbus interface xml
