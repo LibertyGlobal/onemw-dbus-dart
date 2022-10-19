@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.3+5
+
+* xml dependency issue for SDK: 2.16.1
+
 ## 0.7.3+4
 
 * ONEMPERS-594 expose ignore sender parameter
