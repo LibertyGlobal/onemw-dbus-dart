@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.7.3+5
+
+* xml dependency issue for SDK: 2.16.1
+
+## 0.7.3+4
+
+* ONEMPERS-594 expose ignore sender parameter
+* ONEMPERS-609 add support for DBusDict over WebSockets
+* released from tag 0.7.3+4
+
+## 0.7.3+3
+
+* generator: use basename of dbus interface xml
+* released from tag 0.7.3+3
+
+## 0.7.3+2
+
+* homepage updated
+* generator updated
+
+## 0.7.3+1
+
+* 0.7.3 dbus.dart version with LG onemw extensions, see README.lg.md for details
+* xml dependency updated
+
 ## 0.7.3
 
 * Add missing cast in generated array code.
