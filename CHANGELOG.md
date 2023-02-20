@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.3+6
+
+* update dependencies 
+  - break compatibility with flutter < 3.0.0, sdk < 2.17.0
+  - setup like in the following latest main: https://github.com/canonical/dbus.dart/blob/f7dbc76d1fad1187c9ea15a88c1e97c7199782fa/pubspec.yaml
+
 ## 0.7.3+5
 
 * xml dependency issue for SDK: 2.16.1
