@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.3+7
+
+* Dart 3 support
+
 ## 0.7.3+6
 
 * update dependencies 
